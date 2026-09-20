@@ -70,7 +70,7 @@ export function ProjectsView({ data }: { data: GitHubData }) {
     <div className="flex h-full flex-col">
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight text-foreground">Projects</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-foreground">Repositories</h2>
           <p className="text-sm text-muted-foreground">
             Every repo is a chapter of the journey — pulled straight from GitHub.
           </p>

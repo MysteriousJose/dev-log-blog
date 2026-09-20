@@ -7,7 +7,7 @@ export type View = "home" | "projects"
 
 const views: { id: View; label: string }[] = [
   { id: "home", label: "Home" },
-  { id: "projects", label: "Projects" },
+  { id: "projects", label: "Repositories" },
 ]
 
 export function AppHeader({
