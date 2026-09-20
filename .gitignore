@@ -29,3 +29,4 @@ Thumbs.db
 *.tsbuildinfo
 next-env.d.ts
 bun.lock
+.gitattributes
