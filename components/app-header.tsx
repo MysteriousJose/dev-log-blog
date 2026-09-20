@@ -1,31 +1,38 @@
 "use client"
 
-import { GitBranch, Terminal } from "lucide-react"
-import { profile } from "./dev-data"
+import { GitBranch } from "lucide-react"
+import type { Profile } from "@/lib/github"
 
 export type View = "home" | "projects"
 
 const views: { id: View; label: string }[] = [
   { id: "home", label: "Home" },
-  { id: "projects", label: "Projects" },
+  { id: "projects", label: "Repositories" },
 ]
 
 export function AppHeader({
   active,
   onChange,
+  profile,
 }: {
   active: View
   onChange: (view: View) => void
+  profile: Profile
 }) {
+  const displayName = profile.name === profile.login ? "" : profile.name
   return (
     <header className="flex items-center justify-between gap-4 px-6 py-4 sm:px-10">
       <div className="flex items-center gap-2.5">
-        <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
-          <Terminal className="size-4" aria-hidden="true" />
-        </span>
+        <img
+          src={profile.avatarUrl}
+          alt=""
+          className="size-8 rounded-lg object-cover shadow-sm"
+        />
         <div className="leading-tight">
-          <p className="text-sm font-semibold tracking-tight text-foreground">devlog</p>
-          <p className="text-[11px] text-muted-foreground">{profile.handle}</p>
+          <p className="text-sm font-semibold tracking-tight text-foreground">
+            {displayName || profile.login}
+          </p>
+          <p className="text-[11px] text-muted-foreground">@{profile.login}</p>
         </div>
       </div>
 
@@ -54,7 +61,7 @@ export function AppHeader({
       </nav>
 
       <a
-        href={profile.githubUrl}
+        href={profile.url}
         target="_blank"
         rel="noreferrer"
         className="hidden items-center gap-2 rounded-full border border-border/70 bg-card/70 px-4 py-1.5 text-sm font-medium text-foreground backdrop-blur transition-colors hover:bg-accent sm:inline-flex"
