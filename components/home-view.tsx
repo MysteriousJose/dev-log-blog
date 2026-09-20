@@ -34,7 +34,9 @@ export function HomeView({ onNavigate }: { onNavigate: (view: View) => void }) {
             <ArrowRight className="size-4" aria-hidden="true" />
           </button>
           <a
-            href="#latest"
+            href="https://example.com/blog"
+            target="_blank"
+            rel="noreferrer"
             className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/70 px-5 py-2.5 text-sm font-medium text-foreground backdrop-blur transition-colors hover:bg-accent"
           >
             <BookOpen className="size-4" aria-hidden="true" />
@@ -82,13 +84,15 @@ export function HomeView({ onNavigate }: { onNavigate: (view: View) => void }) {
           </ul>
         </div>
 
-        <div id="latest" className="rounded-2xl border border-border/70 bg-card/80 p-5 shadow-sm backdrop-blur">
+        <div className="rounded-2xl border border-border/70 bg-card/80 p-5 shadow-sm backdrop-blur">
           <h2 className="text-sm font-semibold text-foreground">Latest writing</h2>
           <ul className="mt-3 divide-y divide-border/60">
             {posts.map((post) => (
               <li key={post.title}>
                 <a
-                  href="#"
+                  href="https://example.com/blog"
+                  target="_blank"
+                  rel="noreferrer"
                   className="group flex items-start gap-3 py-2.5 first:pt-0 last:pb-0"
                 >
                   <span className="mt-0.5 rounded-md bg-secondary px-2 py-0.5 text-[10px] font-medium text-secondary-foreground">

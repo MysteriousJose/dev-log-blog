@@ -1,12 +1,24 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { AppHeader, type View } from "./app-header"
 import { HomeView } from "./home-view"
 import { ProjectsView } from "./projects-view"
 
 export function DevApp() {
   const [view, setView] = useState<View>("home")
+
+  // Single-viewport app: prevent the document itself from ever scrolling.
+  useEffect(() => {
+    const { documentElement, body } = document
+    const prev = { html: documentElement.style.overflow, body: body.style.overflow }
+    documentElement.style.overflow = "hidden"
+    body.style.overflow = "hidden"
+    return () => {
+      documentElement.style.overflow = prev.html
+      body.style.overflow = prev.body
+    }
+  }, [])
 
   return (
     <div className="relative flex h-dvh flex-col overflow-hidden bg-background text-foreground">

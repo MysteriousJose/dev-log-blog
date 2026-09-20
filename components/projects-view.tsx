@@ -12,7 +12,9 @@ const statusStyles: Record<Repo["status"], string> = {
 function RepoCard({ repo }: { repo: Repo }) {
   return (
     <a
-      href="#"
+      href={`https://github.com/devlog/${repo.name}`}
+      target="_blank"
+      rel="noreferrer"
       className="group flex flex-col rounded-2xl border border-border/70 bg-card/80 p-4 shadow-sm backdrop-blur transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
     >
       <div className="flex items-start justify-between gap-2">
