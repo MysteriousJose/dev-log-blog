@@ -3,8 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Lumi — Sound, refined',
-  description: 'Lumi Pods: premium wireless earbuds designed for people who care about sound and simplicity.',
+  title: 'devlog — a self-taught journey',
+  description: 'The build log and project showcase of a self-taught developer learning in public, one commit at a time.',
   generator: 'v0.app',
   icons: {
     icon: [

@@ -1,5 +1,5 @@
-import { StoreApp } from "@/components/store/store-app"
+import { DevApp } from "@/components/dev-app"
 
 export default function Page() {
-  return <StoreApp />
+  return <DevApp />
 }
