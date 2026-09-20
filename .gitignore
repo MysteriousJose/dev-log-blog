@@ -6,15 +6,26 @@ __v0_jsx-dev-runtime.ts
 .v0-trash/
 .vercel/
 
-# Environment variables
-.env*.local
+# Local agent / tooling state (machine-specific — contains local paths)
+.omp/
+
+# Generated graph analysis output (Graphify)
+graphify-out/
+
+# Environment variables (private — never commit secrets)
+.env
+.env.*
+!.env.example
 
 # Common ignores
 node_modules
 .next/
+.turbo/
+coverage/
 .DS_Store
+Thumbs.db
 
-#Generated files
+# Generated files
 *.tsbuildinfo
 next-env.d.ts
 bun.lock
