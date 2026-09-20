@@ -3,9 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'devlog — a self-taught journey',
-  description: 'The build log and project showcase of a self-taught developer learning in public, one commit at a time.',
-  generator: 'v0.app',
+  title: 'devlog — building in public',
+  description: "A developer's build log and project showcase, powered live by their GitHub activity and public repositories.",
   icons: {
     icon: [
       {

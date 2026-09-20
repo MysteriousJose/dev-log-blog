@@ -4,10 +4,10 @@ import { useEffect, useState } from "react"
 import { AppHeader, type View } from "./app-header"
 import { HomeView } from "./home-view"
 import { ProjectsView } from "./projects-view"
+import type { GitHubData } from "@/lib/github"
 
-export function DevApp() {
+export function DevApp({ initialData }: { initialData: GitHubData }) {
   const [view, setView] = useState<View>("home")
-
   // Single-viewport app: prevent the document itself from ever scrolling.
   useEffect(() => {
     const { documentElement, body } = document
@@ -39,11 +39,11 @@ export function DevApp() {
         />
       </div>
 
-      <AppHeader active={view} onChange={setView} />
+      <AppHeader active={view} onChange={setView} profile={initialData.profile} />
 
       <main className="flex min-h-0 flex-1 flex-col px-6 pb-8 pt-2 sm:px-10">
         <div className="min-h-0 flex-1">
-          {view === "home" ? <HomeView onNavigate={setView} /> : <ProjectsView />}
+          {view === "home" ? <HomeView data={initialData} onNavigate={setView} /> : <ProjectsView data={initialData} />}
         </div>
       </main>
     </div>
