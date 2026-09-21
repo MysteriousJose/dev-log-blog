@@ -39,7 +39,7 @@ cp .env.example .env
 Hosting with Vercel makes changing anything as simple as pushing to 'main'.
 Beta and undertesting changes go through development where they are tested localy before being delopyed.
 
-## Learn More
+## Learn More 
 
 To learn more, take a look at the following resources:
 
