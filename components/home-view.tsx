@@ -4,6 +4,7 @@ import { ArrowRight, GitCommitVertical, ExternalLink } from "lucide-react"
 import type { GitHubData } from "@/lib/github"
 import { formatCount, relativeTime } from "@/lib/github"
 import type { View } from "./app-header"
+import { ContributionGraph } from "./contribution-graph"
 
 export function HomeView({
   data,
@@ -81,6 +82,9 @@ export function HomeView({
 
       {/* Right: recent activity */}
       <section className="flex flex-col gap-4 lg:col-span-5 lg:justify-center">
+        {data.contributions && (
+          <ContributionGraph calendar={data.contributions.calendar} />
+        )}
         <div className="rounded-2xl border border-border/70 bg-card/80 p-5 shadow-sm backdrop-blur">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-foreground">Recent activity</h2>
