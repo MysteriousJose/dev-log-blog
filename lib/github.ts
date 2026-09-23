@@ -1,12 +1,12 @@
 // Live GitHub data layer.
 //
-// Fetches public profile + repositories and normalizes them for the dev-log UI.
-// Works with no authentication; pass a PAT via `token` to unlock richer
-// activity metrics (GraphQL contribution graph) — see loadGitHubData.
+// Fetches the public profile + repositories and normalizes them for the
+// dev-log UI. Runs unauthenticated; when a PAT is present via the `token`
+// argument it also fetches the yearly contribution graph (GraphQL), the one
+// metric that requires authentication.
 //
 // All `fetch` calls set `next.revalidate` so Next caches upstream responses
 // and stays well under the unauthenticated rate limit.
-
 const USERNAME = process.env.GITHUB_USERNAME ?? "MysteriousJose"
 const DEFAULT_LANGUAGE_COLOR = "oklch(0.6 0.05 280)"
 
@@ -63,10 +63,41 @@ export type Profile = {
   url: string
 }
 
+export type ContributionDay = {
+  date: string
+  count: number
+}
+
+export type ContributionWeek = {
+  days: ContributionDay[]
+}
+
+export type ContributionCalendar = {
+  totalContributions: number
+  weeks: ContributionWeek[]
+}
+
+/**
+ * Yearly GitHub contribution graph. `null` when no PAT is configured, since
+ * the contribution graph is the one metric that requires authentication.
+ */
+export type Contributions = {
+  year: number
+  totalContributions: number
+  calendar: ContributionCalendar
+}
+
 export type GitHubData = {
   profile: Profile
   repos: Repo[]
   recentActivity: { name: string; language: string | null; pushedAt: string; status: RepoStatus; url: string }[]
+  contributions: Contributions | null
+  /**
+   * Why the yearly contribution graph is in its current state.
+   * `no-token` — no PAT configured; `unavailable` — token present but GitHub
+   * couldn't return the graph; `loaded` — graph fetched successfully.
+   */
+  metricsStatus: 'loaded' | 'no-token' | 'unavailable'
   updatedAt: string
 }
 
@@ -97,12 +128,11 @@ type RawRepo = {
   pushed_at: string
 }
 
-async function fetchJson<T>(url: string, token: string | undefined): Promise<T> {
+async function fetchJson<T>(url: string): Promise<T> {
   const res = await fetch(url, {
     headers: {
       Accept: "application/vnd.github+json",
       "User-Agent": "dev-log-blog",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     next: { revalidate: 300 },
   })
@@ -110,6 +140,83 @@ async function fetchJson<T>(url: string, token: string | undefined): Promise<T> 
     throw new Error(`GitHub API ${res.status} for ${url}`)
   }
   return (await res.json()) as T
+}
+
+const CONTRIBUTIONS_QUERY = /* GraphQL */ `
+  query ($login: String!, $from: DateTime!, $to: DateTime!) {
+    user(login: $login) {
+      contributionsCollection(from: $from, to: $to) {
+        contributionCalendar {
+          totalContributions
+          weeks {
+            contributionDays {
+              contributionCount
+              date
+            }
+          }
+        }
+      }
+    }
+  }
+`
+
+type ContributionsResponse = {
+  user: {
+    contributionsCollection: {
+      contributionCalendar: {
+        totalContributions: number
+        weeks: { contributionDays: { contributionCount: number; date: string }[] }[]
+      }
+    }
+  }
+}
+
+async function fetchGraphql<T>(
+  query: string,
+  variables: Record<string, string>,
+  token: string,
+): Promise<T | null> {
+  let parsed: T | null = null
+  try {
+    const res = await fetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "User-Agent": "dev-log-blog",
+      },
+      next: { revalidate: 300 },
+      body: JSON.stringify({ query, variables }),
+    })
+    if (res.ok) {
+      const json = (await res.json()) as { data?: T; errors?: { message: string }[] }
+      if (!json.errors && json.data) parsed = json.data
+    }
+  } catch {
+    parsed = null
+  }
+  return parsed
+}
+
+async function loadContributions(
+  token: string,
+  login: string,
+  from: string,
+  to: string,
+): Promise<Contributions | null> {
+  const data = await fetchGraphql<ContributionsResponse>(CONTRIBUTIONS_QUERY, { login, from, to }, token)
+  const collection = data?.user?.contributionsCollection
+  if (!collection) return null
+  return {
+    year: new Date(to).getFullYear(),
+    totalContributions: collection.contributionCalendar.totalContributions,
+    calendar: {
+      totalContributions: collection.contributionCalendar.totalContributions,
+      weeks: collection.contributionCalendar.weeks.map((week) => ({
+        days: week.contributionDays.map((day) => ({ date: day.date, count: day.contributionCount })),
+      })),
+    },
+  }
 }
 
 function normalizeProfile(raw: RawUser): Profile {
@@ -149,10 +256,9 @@ function normalizeRepo(raw: RawRepo): Repo {
  */
 export async function loadGitHubData(token = process.env.GITHUB_TOKEN): Promise<GitHubData> {
   const [profileRaw, reposRaw] = await Promise.all([
-    fetchJson<RawUser>(`https://api.github.com/users/${USERNAME}`, token),
+    fetchJson<RawUser>(`https://api.github.com/users/${USERNAME}`),
     fetchJson<RawRepo[]>(
       `https://api.github.com/users/${USERNAME}/repos?sort=pushed&per_page=100&v=1710000000`,
-      token,
     ),
   ])
 
@@ -171,8 +277,29 @@ export async function loadGitHubData(token = process.env.GITHUB_TOKEN): Promise<
     status: r.status,
     url: r.url,
   }))
+  const today = new Date()
+  const from = new Date(today)
+  from.setFullYear(today.getFullYear() - 1)
+  let contributions: Contributions | null = null
+  let metricsStatus: GitHubData['metricsStatus'] = 'no-token'
+  if (token) {
+    const result = await loadContributions(token, USERNAME, from.toISOString(), today.toISOString())
+    if (result) {
+      contributions = result
+      metricsStatus = 'loaded'
+    } else {
+      metricsStatus = 'unavailable'
+    }
+  }
 
-  return { profile, repos, recentActivity, updatedAt: new Date().toISOString() }
+  return {
+    profile,
+    repos,
+    recentActivity,
+    contributions,
+    metricsStatus,
+    updatedAt: today.toISOString(),
+  }
 }
 
 /** Whole numbers with thousands separators (e.g. 1340 -> "1,340"). */

@@ -9,6 +9,11 @@ __v0_jsx-dev-runtime.ts
 # Local agent / tooling state (machine-specific — contains local paths)
 .omp/
 
+# IDE / editor settings (machine-specific — local paths)
+.vscode/
+.idea/
+*.code-workspace
+
 # Generated graph analysis output (Graphify)
 graphify-out/
 
@@ -16,6 +21,12 @@ graphify-out/
 .env
 .env.*
 !.env.example
+
+# Package manager / registry auth (may contain tokens — keep local)
+.npmrc
+.pnpmrc
+.netrc
+_netrc
 
 # Common ignores
 node_modules
@@ -26,6 +37,11 @@ coverage/
 Thumbs.db
 
 # Generated files
+dist/
+out/
 *.tsbuildinfo
 next-env.d.ts
 bun.lock
+.gitattributes
+components/store/*
+lib/product.ts
