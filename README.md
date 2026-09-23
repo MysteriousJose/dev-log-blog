@@ -24,7 +24,7 @@ Then open http://localhost:3000. To build for production and serve it locally, r
 The site reads its configuration from environment variables listed in `.env.example`:
 
 - `GITHUB_USERNAME` — GitHub account to display (optional; falls back to `MysteriousJose` in the source).
-- `GITHUB_TOKEN` — optional GitHub personal access token. Raises the API rate limit and unlocks the yearly contribution graph. Leave it blank to fetch public data only.
+- `GITHUB_TOKEN` — optional GitHub personal access token. Raises the API rate limit and unlocks the yearly contribution graph. Leave it blank to fetch public data only. The contribution graph renders as one of three states: the graph itself (token works), a prompt to set `GITHUB_TOKEN` (no token configured), or an error message (token present but the graph couldn't be fetched).
 
 To run locally, copy the template to `.env` and fill in the values:
 
