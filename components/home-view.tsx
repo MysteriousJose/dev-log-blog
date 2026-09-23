@@ -82,8 +82,23 @@ export function HomeView({
 
       {/* Right: recent activity */}
       <section className="flex flex-col gap-4 lg:col-span-5 lg:justify-center">
-        {data.contributions && (
+        {data.metricsStatus === 'loaded' && data.contributions && (
           <ContributionGraph calendar={data.contributions.calendar} />
+        )}
+        {data.metricsStatus === 'no-token' && (
+          <div className="rounded-2xl border border-border/70 border-dashed bg-card/80 p-5 text-center shadow-sm backdrop-blur">
+            <GitCommitVertical className="mx-auto size-5 text-muted-foreground" aria-hidden="true" />
+            <p className="mt-3 text-sm font-medium text-foreground">Yearly contribution graph</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Add your GitHub token to unlock it — set <code className="rounded bg-muted px-1">GITHUB_TOKEN</code> in <code className="rounded bg-muted px-1">.env</code>.
+            </p>
+          </div>
+        )}
+        {data.metricsStatus === 'unavailable' && (
+          <div className="rounded-2xl border border-border/70 border-dashed bg-card/80 p-5 text-center shadow-sm backdrop-blur">
+            <p className="text-sm font-medium text-foreground">Couldn't load your contribution graph</p>
+            <p className="mt-1 text-xs text-muted-foreground">Check your GitHub token and API access.</p>
+          </div>
         )}
         <div className="rounded-2xl border border-border/70 bg-card/80 p-5 shadow-sm backdrop-blur">
           <div className="flex items-center justify-between">

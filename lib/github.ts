@@ -92,6 +92,12 @@ export type GitHubData = {
   repos: Repo[]
   recentActivity: { name: string; language: string | null; pushedAt: string; status: RepoStatus; url: string }[]
   contributions: Contributions | null
+  /**
+   * Why the yearly contribution graph is in its current state.
+   * `no-token` — no PAT configured; `unavailable` — token present but GitHub
+   * couldn't return the graph; `loaded` — graph fetched successfully.
+   */
+  metricsStatus: 'loaded' | 'no-token' | 'unavailable'
   updatedAt: string
 }
 
@@ -140,7 +146,6 @@ const CONTRIBUTIONS_QUERY = /* GraphQL */ `
   query ($login: String!, $from: DateTime!, $to: DateTime!) {
     user(login: $login) {
       contributionsCollection(from: $from, to: $to) {
-        totalContributions
         contributionCalendar {
           totalContributions
           weeks {
@@ -158,7 +163,6 @@ const CONTRIBUTIONS_QUERY = /* GraphQL */ `
 type ContributionsResponse = {
   user: {
     contributionsCollection: {
-      totalContributions: number
       contributionCalendar: {
         totalContributions: number
         weeks: { contributionDays: { contributionCount: number; date: string }[] }[]
@@ -205,7 +209,7 @@ async function loadContributions(
   if (!collection) return null
   return {
     year: new Date(to).getFullYear(),
-    totalContributions: collection.totalContributions,
+    totalContributions: collection.contributionCalendar.totalContributions,
     calendar: {
       totalContributions: collection.contributionCalendar.totalContributions,
       weeks: collection.contributionCalendar.weeks.map((week) => ({
@@ -276,15 +280,24 @@ export async function loadGitHubData(token = process.env.GITHUB_TOKEN): Promise<
   const today = new Date()
   const from = new Date(today)
   from.setFullYear(today.getFullYear() - 1)
-  const contributions = token
-    ? await loadContributions(token, USERNAME, from.toISOString(), today.toISOString())
-    : null
+  let contributions: Contributions | null = null
+  let metricsStatus: GitHubData['metricsStatus'] = 'no-token'
+  if (token) {
+    const result = await loadContributions(token, USERNAME, from.toISOString(), today.toISOString())
+    if (result) {
+      contributions = result
+      metricsStatus = 'loaded'
+    } else {
+      metricsStatus = 'unavailable'
+    }
+  }
 
   return {
     profile,
     repos,
     recentActivity,
     contributions,
+    metricsStatus,
     updatedAt: today.toISOString(),
   }
 }
