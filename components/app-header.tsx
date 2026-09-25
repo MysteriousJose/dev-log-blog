@@ -3,11 +3,14 @@
 import { GitBranch } from "lucide-react"
 import type { Profile } from "@/lib/github"
 
-export type View = "home" | "projects"
+import Link from "next/link"
 
-const views: { id: View; label: string }[] = [
-  { id: "home", label: "Home" },
-  { id: "projects", label: "Repositories" },
+export type View = "home" | "projects" | "blog"
+
+const views: { id: View; label: string; href: string }[] = [
+  { id: "home", label: "Home", href: "/" },
+  { id: "projects", label: "Repositories", href: "/projects" },
+  { id: "blog", label: "Blog", href: "/blog" },
 ]
 
 export function AppHeader({
@@ -16,7 +19,7 @@ export function AppHeader({
   profile,
 }: {
   active: View
-  onChange: (view: View) => void
+  onChange?: (view: View) => void
   profile: Profile
 }) {
   const displayName = profile.name === profile.login ? "" : profile.name
@@ -40,24 +43,50 @@ export function AppHeader({
         aria-label="Primary"
         className="flex items-center gap-1 rounded-full border border-border/70 bg-card/70 p-1 backdrop-blur"
       >
-        {views.map((view) => {
-          const isActive = view.id === active
-          return (
-            <button
-              key={view.id}
-              type="button"
-              onClick={() => onChange(view.id)}
-              aria-current={isActive ? "page" : undefined}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-                isActive
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {view.label}
-            </button>
-          )
-        })}
+          {views.map((view) => {
+            const isActive = view.id === active
+            const base =
+              "rounded-full px-4 py-1.5 text-sm font-medium transition-colors " +
+              (isActive
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground hover:bg-accent")
+
+            // Standalone use (no onChange): every item is a real navigation link.
+            if (!onChange) {
+              return (
+                <Link
+                  key={view.id}
+                  href={view.href}
+                  aria-current={isActive ? "page" : undefined}
+                  className={base}
+                >
+                  {view.label}
+                </Link>
+              )
+            }
+
+            // App shell: Blog stays a link; Home / Repositories are local tabs.
+            return view.id === "blog" ? (
+              <Link
+                key={view.id}
+                href={view.href}
+                aria-current={isActive ? "page" : undefined}
+                className={base}
+              >
+                {view.label}
+              </Link>
+            ) : (
+              <button
+                key={view.id}
+                type="button"
+                onClick={() => onChange(view.id)}
+                aria-current={isActive ? "page" : undefined}
+                className={base}
+              >
+                {view.label}
+              </button>
+            )
+          })}
       </nav>
 
       <a
