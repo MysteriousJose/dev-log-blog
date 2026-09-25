@@ -42,7 +42,7 @@ export const ARTISTS: Artist[] = [
     name: "Shoka",
     username: "inferno_animates",
     about:
-      "A little about this artist — what they make, what inspires them, and one fun fact. " +
+      "I’m a 16 year old artist that specializes in character art. I’ve been drawing since I was little, however I’ve been practicing more seriously for about 6 years. Currently I’m improving my digital art and I’m helping with an indie animation project (not released yet)." +
       "Edit this and it updates on the page automatically.",
     avatarUrl: "/shoka.jpg",
     socialUrl: "https://www.instagram.com/inferun0?utm_source=qr",
