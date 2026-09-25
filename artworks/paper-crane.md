@@ -1,5 +1,5 @@
 ---
-artist: sam
+artist: placeholder
 title: A hundred paper cranes
 date: 2026-06-30
 image: /placeholder.svg

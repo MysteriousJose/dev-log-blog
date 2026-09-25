@@ -42,12 +42,12 @@ export function AppHeader({
 
       <nav
         aria-label="Primary"
-        className="flex items-center gap-1 rounded-full border border-border/70 bg-card/70 p-1 backdrop-blur"
+        className="flex items-center gap-1 flex-1 min-w-0 overflow-x-auto flex-shrink-0 sm:flex-none sm:overflow-visible [-webkit-scrollbar:hidden] [scrollbar-width:none] rounded-full border border-border/70 bg-card/70 p-1 backdrop-blur"
       >
           {views.map((view) => {
             const isActive = view.id === active
             const base =
-              "rounded-full px-4 py-1.5 text-sm font-medium transition-colors " +
+              "flex-shrink-0 whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition-colors " +
               (isActive
                 ? "bg-primary text-primary-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground hover:bg-accent")

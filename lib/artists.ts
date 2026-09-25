@@ -38,19 +38,18 @@ type ArtistWithWorks = Artist & { works: ArtPiece[] }
 // The roster. Add a friend here, then drop their `.md` files in ./artworks.
 export const ARTISTS: Artist[] = [
   {
-    slug: "jordan",
+    slug: "shoka",
     name: "Shoka",
     username: "inferno_animates",
     about:
-      "I’m a 16 year old artist that specializes in character art. I’ve been drawing since I was little, however I’ve been practicing more seriously for about 6 years. Currently I’m improving my digital art and I’m helping with an indie animation project (not released yet)." +
-      "Edit this and it updates on the page automatically.",
+      "I’m a 16 year old artist that specializes in character art. I’ve been drawing since I was little, however I’ve been practicing more seriously for about 6 years. Currently I’m improving my digital art and I’m helping with an indie animation project (not released yet).",
     avatarUrl: "/shoka.jpg",
     socialUrl: "https://www.instagram.com/inferun0?utm_source=qr",
   },
   {
-    slug: "sam",
-    name: "Sam Rivera",
-    username: "samdraws",
+    slug: "placeholder",
+    name: "placeholder",
+    username: "placeholder",
     about:
       "Another friend's gallery card. Their pieces below are pulled from ./artworks, " +
       "grouped by this slug. Change the text freely.",
@@ -90,7 +89,7 @@ async function indexWorks(): Promise<Map<string, ArtPiece[]>> {
         slug: file.replace(/\.md$/, ""),
         artist: data.artist?.trim() ?? "",
         title: data.title?.trim() ?? file,
-        date: new Date(data.date ?? "1970-01-01"),
+        date: new Date(`${data.date ?? "1970-01-01"}T00:00:00`),
         image: data.image?.trim() || undefined,
         medium: data.medium?.trim() || undefined,
         caption: data.excerpt?.trim() || data.caption?.trim(),
