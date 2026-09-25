@@ -46,16 +46,7 @@ export const ARTISTS: Artist[] = [
     avatarUrl: "/shoka.jpg",
     socialUrl: "https://www.instagram.com/inferun0?utm_source=qr",
   },
-  {
-    slug: "placeholder",
-    name: "placeholder",
-    username: "placeholder",
-    about:
-      "Another friend's gallery card. Their pieces below are pulled from ./artworks, " +
-      "grouped by this slug. Change the text freely.",
-    avatarUrl: "/placeholder-user.jpg",
-    socialUrl: "https://example.com/sam",
-  },
+  
 ]
 
 const ARTWORKS_DIR = join(process.cwd(), "artworks")
