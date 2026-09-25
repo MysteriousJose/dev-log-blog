@@ -45,3 +45,4 @@ bun.lock
 .gitattributes
 components/store/*
 lib/product.ts
+documentation/*
