@@ -33,22 +33,28 @@ export function ContributionGraph({ calendar }: { calendar: ContributionCalendar
         aria-label={`Contribution calendar: ${formatCount(total)} contributions over the past year`}
       >
         <div className="flex w-min gap-[3px]">
-          {calendar.weeks.map((week, weekIndex) => (
-            <div key={weekIndex} className="flex flex-col gap-[3px]" aria-hidden="true">
-              {week.days.map((day) => (
-                <div
-                  key={day.date}
-                  className="size-3 rounded-[2px]"
-                  style={{ backgroundColor: LEVELS.find((level) => day.count <= level.max)!.color }}
-                  title={
-                    day.count === 0
-                      ? `No contributions on ${day.date}`
-                      : `${day.count} contribution${day.count === 1 ? "" : "s"} on ${day.date}`
-                  }
-                />
-              ))}
-            </div>
-          ))}
+          {calendar.weeks
+            .slice()
+            .reverse()
+            .map((week, weekIndex) => (
+              <div key={weekIndex} className="flex flex-col gap-[3px]" aria-hidden="true">
+                {week.days
+                  .slice()
+                  .reverse()
+                  .map((day) => (
+                    <div
+                      key={day.date}
+                      className="size-3 rounded-[2px]"
+                      style={{ backgroundColor: LEVELS.find((level) => day.count <= level.max)!.color }}
+                      title={
+                        day.count === 0
+                          ? `No contributions on ${day.date}`
+                          : `${day.count} contribution${day.count === 1 ? "" : "s"} on ${day.date}`
+                      }
+                    />
+                  ))}
+              </div>
+            ))}
         </div>
       </div>
 
