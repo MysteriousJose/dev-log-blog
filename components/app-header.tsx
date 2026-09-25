@@ -5,12 +5,13 @@ import type { Profile } from "@/lib/github"
 
 import Link from "next/link"
 
-export type View = "home" | "projects" | "blog"
+export type View = "home" | "projects" | "blog" | "art"
 
 const views: { id: View; label: string; href: string }[] = [
   { id: "home", label: "Home", href: "/" },
   { id: "projects", label: "Repositories", href: "/projects" },
   { id: "blog", label: "Blog", href: "/blog" },
+  { id: "art", label: "Art", href: "/art" },
 ]
 
 export function AppHeader({
@@ -65,8 +66,9 @@ export function AppHeader({
               )
             }
 
-            // App shell: Blog stays a link; Home / Repositories are local tabs.
-            return view.id === "blog" ? (
+            // App shell: Blog & Art are standalone pages (real routes); Home /
+            // Repositories are local tabs inside this single-page shell.
+            return (view.id === "blog" || view.id === "art") ? (
               <Link
                 key={view.id}
                 href={view.href}
