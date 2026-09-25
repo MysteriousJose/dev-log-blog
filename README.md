@@ -34,6 +34,42 @@ cp .env.example .env
 
 `.env` is gitignored, so real values are never committed. When deploying to Vercel, add `GITHUB_TOKEN` and `GITHUB_USERNAME` as environment variables in the project settings instead.
 
+## Art Gallery
+
+The `/art` section shows galleries of artwork by different people. It is **separate from the blog**: blog posts live in `./posts`, artwork lives in `./artworks`.
+
+### How it works
+
+```sh
+art/                    # markdown files, one per artwork
+  bay-sunset.md          #  artist: jordan  title: ...  date: ...
+  night-market.md        #  artist: jordan
+artworks/...
+```
+
+- Each **artist** is a row in the `ARTISTS` list in [`lib/artists.ts`](lib/artists.ts). Edit `slug`, `name`, `username`, `about`, `avatarUrl`, `socialUrl` there.
+- Each **artwork** is a markdown file in `./artworks/`. Its frontmatter links it to an artist by `slug`.
+
+### Add an artwork
+
+1. Drop a new `.md` file in `./artworks/`.
+2. Fill in the frontmatter:
+
+```md
+---
+artist: jordan        # must match a slug in lib/artists.ts
+title: Sunset over the bay
+date: 2026-08-01
+image: /placeholder.svg       # optional; omit for a blank placeholder
+medium: Digital               # optional
+excerpt: A soft study of light on water.  # optional one-line summary
+---
+
+Write a few sentences about this piece here. Markdown is supported.
+```
+
+3. Restart `pnpm dev`; the piece appears on the artist's gallery automatically.
+
 ## Built with Local AI and Personal Development
 
 Hosting with Vercel makes changing anything as simple as pushing to 'main'.

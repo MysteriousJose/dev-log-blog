@@ -27,7 +27,7 @@ export async function getPostList(): Promise<Omit<Post, "body">[]> {
       return {
         slug: file.replace(/\.md$/, ""),
         title: data.title ?? file,
-        date: new Date(data.date ?? "1970-01-01"),
+        date: new Date(`${data.date ?? "1970-01-01"}T00:00:00`),
         excerpt: data.excerpt ?? "No excerpt.",
         body,
       }
