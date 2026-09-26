@@ -44,7 +44,7 @@ export const ARTISTS: Artist[] = [
     about:
       "I’m a 16 year old artist that specializes in character art. I’ve been drawing since I was little, however I’ve been practicing more seriously for about 6 years. Currently I’m improving my digital art and I’m helping with an indie animation project (not released yet).",
     avatarUrl: "/shoka.jpg",
-    socialUrl: "https://www.instagram.com/inferun0?utm_source=qr",
+    socialUrl: "https://www.instagram.com/inferno_animates?stkn=YWdqcW1mYWR1YWd0&utm_source=qr",
   },
   
 ]
