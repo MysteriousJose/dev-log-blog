@@ -53,7 +53,7 @@ export async function getPost(slug: string): Promise<Post | null> {
     return {
       slug,
       title: data.title ?? slug,
-      date: new Date(data.date ?? "1970-01-01"),
+      date: new Date(`${data.date ?? "1970-01-01"}T00:00:00`),
       excerpt: data.excerpt ?? "",
       body,
     }
