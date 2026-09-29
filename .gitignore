@@ -46,3 +46,5 @@ bun.lock
 components/store/*
 lib/product.ts
 documentation/*
+AGENTS.md
+CLAUDE.md
