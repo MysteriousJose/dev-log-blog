@@ -46,7 +46,14 @@ export const ARTISTS: Artist[] = [
     avatarUrl: "/shoka.jpg",
     socialUrl: "https://www.instagram.com/inferno_animates?stkn=YWdqcW1mYWR1YWd0&utm_source=qr",
   },
-  
+  {
+    slug: "shaku",
+    name: "Shaku",
+    username: "",
+    about: "15 abt to be 16 year old who can somehow draw good",
+    avatarUrl: "/shaku.png",
+    socialUrl: "",
+  }
 ]
 
 const ARTWORKS_DIR = join(process.cwd(), "artworks")
