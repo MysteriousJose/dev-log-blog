@@ -10,9 +10,6 @@ export default async function BlogPage() {
     <>
       <header className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight">Blog Articles</h1>
-        <p className="text-sm text-muted-foreground">
-          Thoughts, build logs, and lessons, maybe some public embarrassment.
-        </p>
       </header>
 
       {posts.length === 0 ? (
