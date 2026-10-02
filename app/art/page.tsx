@@ -8,9 +8,6 @@ export default async function ArtistsPage() {
     <>
       <header className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight">Artwork</h1>
-        <p className="text-sm text-muted-foreground">
-          Pieces from me and friends — pick an artist to see their gallery.
-        </p>
       </header>
 
       {artists.length === 0 ? (

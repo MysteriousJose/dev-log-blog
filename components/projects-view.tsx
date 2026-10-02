@@ -71,9 +71,6 @@ export function ProjectsView({ data }: { data: GitHubData }) {
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight text-foreground">Repositories</h2>
-          <p className="text-sm text-muted-foreground">
-            Every repo is a chapter of the journey — pulled straight from GitHub.
-          </p>
         </div>
         <span className="rounded-full border border-border/70 bg-card/70 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
           {data.repos.length} public repositories
