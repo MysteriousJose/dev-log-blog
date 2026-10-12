@@ -34,10 +34,6 @@ export function HomeView({
           <span className="text-primary">one commit</span> at a time.
         </h1>
 
-        <p className="mt-4 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground">
-          {profile.bio || "Sharing what I'm building and learning, in public."}
-        </p>
-
         <div className="mt-7 flex flex-wrap items-center gap-3">
           <button
             type="button"
