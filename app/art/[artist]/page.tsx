@@ -17,6 +17,7 @@ export default async function ArtistPage({
 
   return (
     <>
+    <main className="mx-auto w-full max-w-7xl px-4">
       <header className="mb-8">
         <div className="flex items-center gap-4">
           <img src={data.avatarUrl} alt="" className="size-20 rounded-full object-cover shadow-sm" />
@@ -45,7 +46,6 @@ export default async function ArtistPage({
           </p>
         )}
       </header>
-
       <div className="mb-4 flex items-baseline justify-between">
         <h2 className="text-xl font-semibold tracking-tight">Artworks</h2>
         <span className="text-sm text-muted-foreground">{data.works.length} pieces</span>
@@ -66,6 +66,7 @@ export default async function ArtistPage({
           ← Back to all artwork
         </Link>
       </p>
+    </main>
     </>
   )
 }

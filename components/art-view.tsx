@@ -1,4 +1,5 @@
 import { ArrowUpRight, CalendarClock } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import type { Artist, ArtPiece } from "@/lib/artists"
 
@@ -43,7 +44,18 @@ export function PieceCard({ work }: { work: ArtPiece }) {
   return (
     <Link href={`/art/${work.artist}/${work.slug}`} className={`${CARD} overflow-hidden`}>
       {work.image ? (
-        <img src={work.image} alt={work.title} className="aspect-[4/3] w-full object-cover" />
+        <div className="relative aspect-[4/3] w-full overflow-hidden bg-secondary/40">
+          <Image
+            src={work.image}
+            alt={work.title}
+            fill
+            sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 1024px) 50vw, 33vw"
+            quality={65}
+            format="auto"
+            loading="lazy"
+            className="object-cover"
+          />
+        </div>
       ) : (
         <div className="aspect-[4/3] w-full bg-secondary/40" />
       )}
