@@ -43,7 +43,7 @@ export default async function PiecePage({
       </div>
 
       {work.image && (
-        <figure className="mt-6 mx-auto w-[815px] overflow-hidden rounded-2xl">
+        <figure className="mt-6 mx-auto w-full max-w-[815px] overflow-hidden rounded-2xl">
           <img src={work.image} alt={work.title} className="w-full h-auto" />
         </figure>
       )}
