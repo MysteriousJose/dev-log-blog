@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === "production";
 const securityHeaders = [
   // Lock down everything the app does not explicitly allow below.
   {
@@ -8,7 +9,11 @@ const securityHeaders = [
       // hydration scripts + inline styles. No user-controlled HTML is ever
       // rendered on the client, so no nonce is required.
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com",
+      // Dev needs 'unsafe-eval' for React's dev runtime (source maps, Fast
+      // Refresh); production React never calls eval, so it stays unlisted.
+      isProd
+        ? "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com"
+        : "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com",
       // Pervasive `style={{...}}` objects + Next's inlined global CSS.
       "style-src 'self' 'unsafe-inline'",
       // Local assets, GitHub avatar CDN, and github.com fallbacks.
@@ -49,10 +54,13 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    // Allowlist quality values so quality={65}/quality={80} actually take effect
+    // instead of silently falling back to the default q=75 (Next's
+    // images.qualities defaults to [75] and warns otherwise).
+    qualities: [65, 75, 80],
   },
-  // next.config headers are applied by the production server and Vercel.
-  // Declared as a config-field function (the form Next 16 expects) so they
+  // Applied by the dev and production servers alike (see the dev-only 'unsafe-eval'
+  // above); declared as a config-field function (the form Next 16 expects) so they
   // are picked up reliably regardless of module interop quirks.
   headers() {
     return [
