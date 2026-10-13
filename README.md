@@ -1,7 +1,7 @@
 # dev-log-blog
 
-This is a [Next.js](https://nextjs.org) website hosted by Vercel(https://vercel.com), developed by me and local AI. 
-I will be using it to driplay my projects and activiy aswell as semifrequent blogs.
+This is a [Next.js](https://nextjs.org) website hosted by Vercel(https://vercel.com), developed by me with assistance from my local AI. 
+I will be using it to display my projects and activity as well as semi-frequent blogs.
 
 ## Getting Started
 
@@ -48,12 +48,12 @@ artworks/...
 ```
 
 - Each **artist** is a row in the `ARTISTS` list in [`lib/artists.ts`](lib/artists.ts). Edit `slug`, `name`, `username`, `about`, `avatarUrl`, `socialUrl` there.
-- Each **artwork** is a markdown file in `./artworks/`. Its frontmatter links it to an artist by `slug`.
+- Each **artwork** is a markdown file in `./artworks/`. Its front matter links it to an artist by `slug`.
 
 ### Add an artwork
 
 1. Drop a new `.md` file in `./artworks/`.
-2. Fill in the frontmatter:
+2. Fill in the front matter:
 
 ```md
 ---
@@ -73,7 +73,7 @@ Write a few sentences about this piece here. Markdown is supported.
 ## Built with Local AI and Personal Development
 
 Hosting with Vercel makes changing anything as simple as pushing to 'main'.
-Beta and undertesting changes go through development where they are tested localy before being delopyed.
+Beta and under-testing changes go through development where they are tested locally before being deployed.
 
 ## Learn More 
 
