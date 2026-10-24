@@ -50,7 +50,7 @@ export const ARTISTS: Artist[] = [
     slug: "shaku",
     name: "Shaku",
     username: "",
-    about: "15 abt to be 16 year old who can somehow draw good",
+    about: "16 year old who can somehow draw good",
     avatarUrl: "/shaku.png",
     socialUrl: "",
   }
