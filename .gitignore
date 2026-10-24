@@ -48,3 +48,4 @@ lib/product.ts
 documentation/*
 AGENTS.md
 CLAUDE.md
+FETCH_HEAD
