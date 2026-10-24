@@ -1,7 +1,7 @@
 // src/middleware.ts  (or middleware.ts at root)
 import { NextResponse } from "next/server"
 
-export function middleware(req: Request) {
+export function proxy(req: Request) {
   const url = req.nextUrl.pathname
   const isImage = /\.(jpg|jpeg|png|gif|webp|avif)$/.test(url)
   const referer = req.headers.get("referer") ?? ""
