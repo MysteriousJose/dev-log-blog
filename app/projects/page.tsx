@@ -17,7 +17,7 @@ export default async function ProjectsPage() {
         }} />
       </div>
 
-      <AppHeader active="projects" profile={data.profile} />
+      <AppHeader active="projects" profile={data.profile} status={data.status} />
 
       {/* Mirror DevApp's flex skeleton so ProjectsView's h-full / flex-1 has a height;
           overflow-auto lets this standalone page scroll when the grid is tall. */}

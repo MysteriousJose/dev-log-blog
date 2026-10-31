@@ -97,6 +97,12 @@ export type GitHubData = {
    * `no-token` — no PAT configured; `unavailable` — token present but GitHub
    * couldn't return the graph; `loaded` — graph fetched successfully.
    */
+  /**
+   * Health of the public profile/repos fetch. `loaded` — fetched successfully;
+   * `unavailable` — GitHub is rate-limited/unreachable, payload is degraded.
+   * Drives the "GitHub unavailable" banner.
+   */
+  status: 'loaded' | 'unavailable'
   metricsStatus: 'loaded' | 'no-token' | 'unavailable'
   updatedAt: string
 }
@@ -249,34 +255,62 @@ function normalizeRepo(raw: RawRepo): Repo {
     pushedAt: raw.pushed_at,
   }
 }
-
 /**
  * Load public profile + repositories for the configured account.
+ *
+ * Fails gracefully: if GitHub is rate-limited (HTTP 403) or unreachable,
+ * returns a degraded payload (`status: 'unavailable'`) instead of throwing,
+ * so the UI shows a banner instead of a 500 page.
+ *
  * @param token Optional PAT for richer (GraphQL) activity metrics.
  */
 export async function loadGitHubData(token = process.env.GITHUB_TOKEN): Promise<GitHubData> {
-  const [profileRaw, reposRaw] = await Promise.all([
-    fetchJson<RawUser>(`https://api.github.com/users/${USERNAME}`),
-    fetchJson<RawRepo[]>(
-      `https://api.github.com/users/${USERNAME}/repos?sort=pushed&per_page=100&v=1710000000`,
-    ),
-  ])
+  let status: 'loaded' | 'unavailable' = 'loaded'
+  let profile: Profile
+  let repos: Repo[] = []
+  let recentActivity: GitHubData["recentActivity"] = []
 
-  const profile = normalizeProfile(profileRaw)
+  try {
+    const [profileRaw, reposRaw] = await Promise.all([
+      fetchJson<RawUser>(`https://api.github.com/users/${USERNAME}`),
+      fetchJson<RawRepo[]>(
+        `https://api.github.com/users/${USERNAME}/repos?sort=pushed&per_page=100&v=1710000000`,
+      ),
+    ])
 
-  // Show only the user's own projects (exclude forks), newest activity first.
-  const repos = reposRaw
-    .filter((raw) => !raw.fork)
-    .map(normalizeRepo)
-    .sort((a, b) => new Date(b.pushedAt).getTime() - new Date(a.pushedAt).getTime())
+    profile = normalizeProfile(profileRaw)
 
-  const recentActivity = repos.slice(0, 3).map((r) => ({
-    name: r.name,
-    language: r.language,
-    pushedAt: r.pushedAt,
-    status: r.status,
-    url: r.url,
-  }))
+    // Show only the user's own projects (exclude forks), newest activity first.
+    repos = reposRaw
+      .filter((raw) => !raw.fork)
+      .map(normalizeRepo)
+      .sort((a, b) => new Date(b.pushedAt).getTime() - new Date(a.pushedAt).getTime())
+
+    recentActivity = repos.slice(0, 3).map((r) => ({
+      name: r.name,
+      language: r.language,
+      pushedAt: r.pushedAt,
+      status: r.status,
+      url: r.url,
+    }))
+  } catch {
+    // GitHub is rate-limited, unreachable, or returned malformed JSON.
+    // Degrade instead of throwing so callers render a banner, not a 500.
+    status = 'unavailable'
+    profile = {
+      login: USERNAME,
+      name: USERNAME,
+      avatarUrl: "",
+      bio: null,
+      location: null,
+      publicRepos: 0,
+      followers: 0,
+      following: 0,
+      joinedYear: new Date().getFullYear(),
+      url: `https://github.com/${USERNAME}`,
+    }
+  }
+
   const today = new Date()
   const from = new Date(today)
   from.setFullYear(today.getFullYear() - 1)
@@ -298,6 +332,7 @@ export async function loadGitHubData(token = process.env.GITHUB_TOKEN): Promise<
     recentActivity,
     contributions,
     metricsStatus,
+    status,
     updatedAt: today.toISOString(),
   }
 }

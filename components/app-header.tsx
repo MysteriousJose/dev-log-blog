@@ -1,7 +1,8 @@
 "use client"
 
-import { GitBranch } from "lucide-react"
+import { GitBranch, AlertTriangle, Rocket } from "lucide-react"
 import type { Profile } from "@/lib/github"
+import { activeProject } from "@/lib/active-project"
 
 import Link from "next/link"
 
@@ -18,13 +19,35 @@ export function AppHeader({
   active,
   onChange,
   profile,
+  status,
 }: {
   active: View
   onChange?: (view: View) => void
   profile: Profile
+  status: 'loaded' | 'unavailable'
 }) {
   const displayName = profile.name === profile.login ? "" : profile.name
   return (
+    <>
+      {status === 'unavailable' && (
+        <div
+          role="status"
+          className="flex items-center justify-center gap-2 rounded-b-xl border border-b-0 border-border/70 bg-card/80 px-6 py-2 text-sm font-medium text-muted-foreground backdrop-blur sm:px-10"
+        >
+          <AlertTriangle className="size-4" aria-hidden="true" />
+          GitHub is currently unavailable — showing cached data. Metrics may be stale.
+        </div>
+      )}
+    {activeProject && (
+      <Link
+        href={`/project/${activeProject.slug}`}
+        className="flex items-center justify-center gap-2 rounded-b-xl border border-b-0 border-border/70 bg-primary/10 px-6 py-2 text-sm font-medium text-foreground backdrop-blur transition-colors hover:bg-primary/20 sm:px-10"
+      >
+        <Rocket className="size-4" aria-hidden="true" />
+        {activeProject.name}
+        <span className="opacity-60" aria-hidden="true">→</span>
+      </Link>
+    )}
     <header className="flex items-center justify-between gap-4 px-6 py-4 sm:px-10">
       <div className="flex items-center gap-2.5">
         <img
@@ -101,5 +124,6 @@ export function AppHeader({
         Follow
       </a>
     </header>
+    </>
   )
 }

@@ -70,6 +70,38 @@ Write a few sentences about this piece here. Markdown is supported.
 
 3. Restart `pnpm dev`; the piece appears on the artist's gallery automatically.
 
+## Project Blog (Top Banner)
+
+A banner across the top of every page points to a **hidden** blog about your
+current project. It shows on every page and is the only way to reach it — it is
+not linked from the nav and does not appear in the `/blog` listing.
+
+### How it works
+
+```sh
+lib/active-project.ts        # the one file you edit: banner name + URL slug
+project-posts/<slug>.md      # the hidden write-up (Markdown, like a blog post)
+app/project/[slug]/page.tsx  # renders it at /project/<slug>
+```
+
+- Set the banner text and target in [`lib/active-project.ts`](lib/active-project.ts). Edit `name` (what shows on the banner) and `slug` (the URL, and the filename under `project-posts/`). Set the export to `null` to hide the banner entirely.
+- Each project write-up is a Markdown file in `./project-posts/`. It renders the same way as a blog post (headings, lists, code blocks) but stays out of the main `/blog` listing.
+
+### Change the active project
+
+1. Edit `name` and `slug` in [`lib/active-project.ts`](lib/active-project.ts).
+2. Replace `./project-posts/<slug>.md` with your own write-up (a starter is included). A template lives at [`templates/project-template.md`](templates/project-template.md).
+3. Restart `pnpm dev`.
+
+```md
+---
+title: My Project
+date: 2026-10-31
+---
+
+Write the story of this project here. Markdown is supported.
+```
+
 ## Built with Local AI and Personal Development
 
 Hosting with Vercel makes changing anything as simple as pushing to 'main'.
