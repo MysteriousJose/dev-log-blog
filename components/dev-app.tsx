@@ -39,7 +39,7 @@ export function DevApp({ initialData }: { initialData: GitHubData }) {
         />
       </div>
 
-      <AppHeader active={view} onChange={setView} profile={initialData.profile} />
+      <AppHeader active={view} onChange={setView} profile={initialData.profile} status={initialData.status} />
 
       <main className="flex min-h-0 flex-1 flex-col overflow-auto px-6 pb-8 pt-2 sm:px-10">
         <div className="min-h-0 flex-1">
