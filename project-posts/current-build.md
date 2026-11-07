@@ -10,3 +10,9 @@ My  Linux Fork:  [Github](https://github.com/MysteriousJose/ScorePlus-Linux)
 This is where I will talk about my progress and what I have completed so far. Right now the best way to run it on anything other than windowes is your translation app of choice, linux being [Wine](https://www.winehq.org/).
 
 Today Oct 31st, I updated my fork and started seeing what I could do. As this program is fully windows only functions I will have to do a full rebuild.
+
+
+On nov 2nd i got all smoke tests prebuilt from LHUltimate recoded and working on my base rewrite to avalonia.
+
+
+As of now Nov 7th I have rebuilt most windows and amd starting to work on the connecting services. I still have no proof it works, because the AI is keeping that process for later.
