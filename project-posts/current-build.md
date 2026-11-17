@@ -20,3 +20,5 @@ As of now Nov 7th I have rebuilt most windows and amd starting to work on the co
 Now November 11th my first build is almost ready and I have improved my AI assistants speeds to over 100 tokens per second. LHUltimate also made a website for the project [here](https://lhultimate.github.io/ScorePlus/)
 
 November 14th I connected all the free apis I could find to my agent Hub if you will of QFN and had them get to work on build errors, we are down to 13 errors. AYYYY! no more build errors ```129 Warning(s) 0 Error(s)```, those warnings are crucial. Atleast on my machine both windows open.... and are blank. Will get working on that asap. For now this will be my first merge into the main upstream repo.
+
+November 16th, all build errors cleared, github actions made, first release created.
