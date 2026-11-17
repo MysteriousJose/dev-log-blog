@@ -43,6 +43,10 @@ export type Repo = {
   languageColor: string
   stars: number
   forks: number
+  /** Fork of another repository (kept only when it has the user's own commits). */
+  fork: boolean
+  /** `owner/name` of the upstream repo, or `null` for original repositories. */
+  forkedFrom: string | null
   topics: string[]
   status: RepoStatus
   url: string
@@ -127,6 +131,9 @@ type RawRepo = {
   stargazers_count: number
   forks: number
   fork: boolean
+  owner: { login: string }
+  default_branch: string
+  parent?: { full_name: string; default_branch: string } | null
   topics: string[]
   archived: boolean
   html_url: string
@@ -240,7 +247,42 @@ function normalizeProfile(raw: RawUser): Profile {
   }
 }
 
-function normalizeRepo(raw: RawRepo): Repo {
+/**
+ * How many forks we probe per load. Each probe costs two API requests (repo
+ * detail + compare), so this bounds an account with many forks from burning
+ * the unauthenticated budget.
+ */
+const MAX_FORK_CHECKS = 10
+
+/**
+ * A fork starts out as an exact copy of upstream, so having been forked says
+ * nothing about whether the user worked in it. The repo payload carries no
+ * ahead-count, so ask the compare API whether the fork's default branch has
+ * commits the upstream branch does not.
+ *
+ * Returns the upstream `owner/name` when the fork has its own commits, and
+ * `null` for untouched forks or when the check can't run (rate limit, deleted
+ * branch, upstream no longer sharing history) — a fork is never shown on a guess.
+ */
+async function forkWithOwnCommits(raw: RawRepo): Promise<string | null> {
+  try {
+    // `/users/:login/repos` omits the `parent` block, so read the repo itself
+    // to learn which branch it was forked from.
+    const detail = raw.parent
+      ? raw
+      : await fetchJson<RawRepo>(`https://api.github.com/repos/${raw.owner.login}/${raw.name}`)
+    const parent = detail.parent
+    if (!parent) return null
+    const comparison = await fetchJson<{ ahead_by: number }>(
+      `https://api.github.com/repos/${parent.full_name}/compare/${parent.default_branch}...${raw.owner.login}:${raw.default_branch}`,
+    )
+    return comparison.ahead_by > 0 ? parent.full_name : null
+  } catch {
+    return null
+  }
+}
+
+function normalizeRepo(raw: RawRepo, forkedFrom: string | null): Repo {
   return {
     name: raw.name,
     description: raw.description,
@@ -248,6 +290,8 @@ function normalizeRepo(raw: RawRepo): Repo {
     languageColor: LANGUAGE_COLORS[raw.language ?? ""] ?? DEFAULT_LANGUAGE_COLOR,
     stars: raw.stargazers_count,
     forks: raw.forks,
+    fork: raw.fork,
+    forkedFrom,
     topics: raw.topics ?? [],
     status: raw.archived ? "Archived" : "Active",
     url: raw.html_url,
@@ -280,10 +324,22 @@ export async function loadGitHubData(token = process.env.GITHUB_TOKEN): Promise<
 
     profile = normalizeProfile(profileRaw)
 
-    // Show only the user's own projects (exclude forks), newest activity first.
-    repos = reposRaw
-      .filter((raw) => !raw.fork)
-      .map(normalizeRepo)
+    // Show the user's own projects plus forks they actually committed to;
+    // untouched forks only mirror upstream. Newest activity first.
+    let forkChecks = 0
+    const relevant = (
+      await Promise.all(
+        reposRaw.map(async (raw) => {
+          if (!raw.fork) return { raw, forkedFrom: null }
+          if (forkChecks++ >= MAX_FORK_CHECKS) return null
+          const forkedFrom = await forkWithOwnCommits(raw)
+          return forkedFrom ? { raw, forkedFrom } : null
+        }),
+      )
+    ).filter((entry): entry is { raw: RawRepo; forkedFrom: string | null } => entry !== null)
+
+    repos = relevant
+      .map(({ raw, forkedFrom }) => normalizeRepo(raw, forkedFrom))
       .sort((a, b) => new Date(b.pushedAt).getTime() - new Date(a.pushedAt).getTime())
 
     recentActivity = repos.slice(0, 3).map((r) => ({

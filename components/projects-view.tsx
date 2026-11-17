@@ -30,6 +30,13 @@ function RepoCard({ repo }: { repo: GitHubData["repos"][number] }) {
         {repo.description || "No description provided."}
       </p>
 
+      {repo.forkedFrom && (
+        <p className="mt-1.5 flex items-center gap-1 font-mono text-[10px] text-muted-foreground">
+          <GitFork className="size-3" aria-hidden="true" />
+          fork of {repo.forkedFrom}
+        </p>
+      )}
+
       {repo.topics.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1.5">
           {repo.topics.map((topic) => (
