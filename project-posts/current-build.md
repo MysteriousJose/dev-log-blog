@@ -24,3 +24,5 @@ November 14th I connected all the free apis I could find to my agent Hub if you 
 November 16th, all build errors cleared, github actions made, first release created.
 
 November 17th, WE ARE OFFICIALY UP TO DATE WITH WINDOWS WOOHOO. I may have skipped intermeieary alpha releases but all features are in the beta release anyways so why would I make one for each version?
+
+November 21st. Well I see now why linux is hard to develop for, everyone has different machines, things that work on mine don't always work on everyone elses.
